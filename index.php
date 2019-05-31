@@ -1,35 +1,59 @@
-<html>
-  <head>
-    <meta>
-    <title>database 2</title>
-  </head>
-  <body>
 
+<html >
+<head>
+	<meta>
+	<title>Eindopdracht - Database #2</title>
+
+	<?php require 'include/connection.php' ?>
+	<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+	<?php date_default_timezone_set('Europe/Amsterdam') ?>
+</head>
+<body>
+
+<h2>Gegevens opvragen vanuit de Database..</h2>
 
 <?php
- include "database.php";
-
 $sql = "SELECT id, voornaam, achternaam, geboortedatum FROM eindopdracht";
-$result = $conn->query($sql);
+$result = mysqli_query($conn, $sql);
 
 if ($result->num_rows > 0) {
-    while($row = $result->fetch_assoc()) {
-        echo "<br> id: ". $row["id"]. " - Naam: ". $row["voornaam"]. " " . $row["achternaam"] . " - Geboortedatum: ". $row["geboortedatum"] . "<br>";
-    }
+echo "<table border='1'>
+<tr>
+<th>ID: </th>
+<th>Voornaam: </th>
+<th>Achternaam: </th>
+<th>Geb. datum: </th>
+<th>Leeftijd: </th>
+</tr>";
+
+while($row = mysqli_fetch_assoc($result)) {
+
+  require 'include/age_calc.php';
+
+  echo "<tr>";
+  echo "<td>" . $row['id'] . "</td>";
+  echo "<td>" . $row['voornaam'] . "</td>";
+  echo "<td>" . $row['achternaam'] . "</td>";
+  echo "<td>" . $row['geboortedatum'] . "</td>";
+  echo "<td>$years jaar oud</td>";
+  echo "</tr>";
+  }
+echo "</table>";
+
 } else {
-    echo "0 results";
+    echo "Er bevinden zich (nog) geen entries in de database...";
 }
 
 $conn->close();
 
 ?>
 
-<form name="form" method="post" action="database.php" >
-  <select name="id">
-    <option value="1"><?php $row["id"] $row["voornaam"] $row["achternaam"] $row ["geboortedatum"]?></option>
-    <option value="2"><?php $row["id"] $row["voornaam"] $row["achternaam"] $row ["geboortedatum"]?></option>
-    <option value="3"><?php $row["id"] $row["voornaam"] $row["achternaam"] $row ["geboortedatum"]?></option>
-  </select>
+<br />
+<button onclick="window.location.href = 'Add.php'">Add</button>
+<button onclick="window.location.href = 'edit.php'">Edit</button>
+<button onclick="window.location.href = 'delete.php'">Delete</button>
+<button onclick="window.location.reload() = '#'">Refresh page</button>
 
-  </body>
+
+</body>
 </html>
